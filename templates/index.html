@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BubbleMap Transaction Visualizer</title>
+  <!-- Load D3.js (v6) and jQuery -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Header & Data Input -->
+    <div id="header">
+      <h1>BubbleMap Transaction Visualizer</h1>
+      <form id="fetch-form">
+        <label>
+          Wallet Address:
+          <input type="text" id="wallet-address" placeholder="0x..." required />
+        </label>
+        <label>
+          Overall Start Date:
+          <input type="text" id="start-date" placeholder="YYYY-MM-DD" required />
+        </label>
+        <label>
+          Overall End Date:
+          <input type="text" id="end-date" placeholder="YYYY-MM-DD" required />
+        </label>
+        <button type="submit">Fetch Transactions</button>
+
+        <!-- Network selection -->
+        <label>
+          Network:
+          <select id="network-select">
+            <option value="ethereum">Ethereum</option>
+            <option value="bsc">BSC</option>
+          </select>
+        </label>
+
+        <!-- Regular API Key input -->
+        <label id="api-key-label">
+          API Key:
+          <input type="text" id="api-key" placeholder="Enter your API key" required />
+        </label>
+        
+      </form>
+    </div>
+
+    <!-- Place this above your visualization (or wherever appropriate) -->
+    <div id="loading-message" style="display: none; font-weight: bold; margin: 10px;">Fetching transactions...</div>
+
+
+    <!-- Filters Panel -->
+    <div id="filters-panel">
+      <h2>Filters</h2>
+      <div>
+        <strong>Transaction Types:</strong>
+        <label><input type="checkbox" class="tx-type" value="normal" checked /> Normal</label>
+        <label><input type="checkbox" class="tx-type" value="erc20" checked /> ERC20</label>
+        <label><input type="checkbox" class="tx-type" value="internal" checked /> Internal</label>
+      </div>
+
+      <!-- New ERC20 Token Checkboxes Filter -->
+      <div id="erc20-token-checkboxes-container">
+        <h4>ERC20 Tokens (check tokens to include in chart and pricing):</h4>
+        <div id="erc20-token-checkboxes"></div>
+      </div>
+
+      <div>
+        <label>
+          Minimum Dollar Threshold:
+          <input type="number" id="min-dollar" placeholder="0" step="0.01" />
+        </label>
+      </div>
+      <div id="price-settings">
+        <h3>Token Price Settings</h3>
+        <label>
+          ETH or BNB Price ($):
+          <input type="number" id="eth-price" value="3000" step="0.01" />
+        </label>
+        <!-- Additional token prices can be added dynamically -->
+        <div id="erc20-prices"></div>
+      </div>
+      <div>
+        <h3>Time Range Filter</h3>
+        <p id="time-range-label">Drag the slider to adjust the window</p>
+        <svg id="time-slider" width="600" height="70"></svg>
+      </div>
+    </div>
+
+    <div id="edit-map-graphics" style="margin: 10px; padding: 10px; border: 1px solid #ccc;">
+      <h3>Edit Map Graphics</h3>
+      <label>
+        Enable Custom Radius:
+        <input type="checkbox" id="toggle-edit-mode" />
+      </label>
+      <br/>
+      <label>
+        Circle Radius:
+        <input type="range" id="radius-slider" min="100" max="600" value="320" />
+        <span id="radius-value">320</span>
+      </label>
+      <br/>
+      <!-- New single toggle button for bubble positioning -->
+      <button id="toggle-positioning">Edit Bubble Positions</button>
+      <!-- Reset button remains -->
+      <button id="reset-positioning">Reset Positioning</button>
+    </div>
+    
+    
+    
+
+    <!-- Main Content: Sidebar and Visualization -->
+    <div id="main-content">
+      <div id="address-list">
+        <h2>Address List</h2>
+        <ul id="address-ul"></ul>
+      </div>
+      <div id="viz-container">
+        <svg id="viz-svg" width="960" height="600"></svg>
+      </div>
+    </div>
+
+    <!-- Modal for Bubble Options -->
+    <div id="node-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h3>Wallet Options</h3>
+        <p id="modal-address"></p>
+        <label>
+          Nickname:
+          <input type="text" id="node-nickname" />
+        </label>
+        <label>
+          Highlight Color:
+          <input type="color" id="node-color" value="#ffcc00" />
+        </label>
+        <div id="node-summary">
+          <!-- Detailed net in/out information will be displayed here -->
+        </div>
+        <button id="hide-node-button">Hide Node</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load our application script -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
